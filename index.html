@@ -1,59 +1,69 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
   <title>AR.js GLTF Animation (Marker Hiro)</title>
-
-  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-
-  <!-- AR.js -->
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
+  </head>
 
-  <!-- A-Frame Extras untuk animation-mixer -->
-  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.2.0/dist/aframe-extras.min.js"></script>
-</head>
 <body style="margin: 0; overflow: hidden;">
-
   <a-scene
     embedded
     vr-mode-ui="enabled: false"
     arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
+    </a-scene>
 
-    <a-assets>
-      <a-asset-item id="animatedModel" src="orpap3.glb"></a-asset-item>
-    </a-assets>
+  <a-assets>
+    <a-asset-item id="animatedModel" src="orpap2.gltf"></a-asset-item>
+  </a-assets>
 
-    <a-marker preset="hiro">
-      <a-entity
-        id="myModel"
-        gltf-model="#animatedModel"
-        scale="0.4 0.4 0.4"
-        position="0 0 0"
-        rotation="0 0 0">
+  <a-marker preset="hiro">
+
+    <a-entity
+      id="myModel"
+      gltf-model="#animatedModel"
+      scale="0.4 0.4 0.4"
+      position="0 0 0"
+      rotation="0 0 0">
       </a-entity>
-    </a-marker>
+    
+  </a-marker> <a-entity camera></a-entity>
 
-    <a-entity camera></a-entity>
-  </a-scene>
-
-  <script>
+  </a-scene> <script>
+    // Menjalankan kode di dalamnya HANYA setelah seluruh halaman HTML selesai dimuat
     document.addEventListener('DOMContentLoaded', () => {
+
+      // Mencari elemen dengan ID 'myModel' di HTML dan menyimpannya di variabel 'model'
       const model = document.querySelector('#myModel');
 
-      // Pastikan model sudah dimuat sepenuhnya
+      // Menambahkan 'event listener' yang menunggu sampai model 3D ('orpap2.gltf') selesai dimuat
       model.addEventListener('model-loaded', () => {
-        console.log('✅ Model berhasil dimuat, menyalakan animasi...');
+        // Baris ini akan muncul di 'console' browser saat model siap
+        console.log('✅ Model (orpap2.gltf) berhasil dimuat, menyalakan animasi...');
 
-        // Putar semua animasi
+        // Ini adalah perintah untuk MEMUTAR ANIMASI
         model.setAttribute('animation-mixer', {
-          clip: 'Armature|mixamo.com|Layer0, Armature|mixamo.com|Layer0.001',
+          // 'clip: "*"' adalah wildcard, artinya "temukan dan putar SEMUA klip animasi" yang ada di dalam file .gltf
+          clip: '*',
+          // 'loop: "repeat"' membuat animasi berputar terus-menerus
           loop: 'repeat',
+          // 'timeScale: 1' memutar animasi dengan kecepatan normal
           timeScale: 1
         });
-      });
-    });
+      }); // Penutup 'model-loaded'
+
+      // Menambahkan 'event listener' lain untuk menangkap JIKA model GAGAL dimuat
+      model.addEventListener('model-error', (e) => {
+        // Menampilkan pesan error di console jika terjadi masalah
+        console.error('❌ Gagal memuat model:', e.detail);
+      }); // Penutup 'model-error'
+
+    }); // Penutup 'DOMContentLoaded'
   </script>
 </body>
+
 </html>
