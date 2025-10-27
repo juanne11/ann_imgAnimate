@@ -11,9 +11,8 @@
   <!-- AR.js -->
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
-  <!-- A-Frame Extras (untuk animation-mixer) -->
+  <!-- A-Frame Extras untuk animation-mixer -->
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.2.0/dist/aframe-extras.min.js"></script>
-
 </head>
 <body style="margin: 0; overflow: hidden;">
 
@@ -22,27 +21,39 @@
     vr-mode-ui="enabled: false"
     arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
 
-    <!-- Muat aset GLB -->
     <a-assets>
       <a-asset-item id="animatedModel" src="orpap3.glb"></a-asset-item>
     </a-assets>
 
-    <!-- Marker Hiro -->
     <a-marker preset="hiro">
       <a-entity
+        id="myModel"
         gltf-model="#animatedModel"
-        scale="0.5 0.5 0.5"
+        scale="0.4 0.4 0.4"
         position="0 0 0"
-        rotation="0 0 0"
-        animation-mixer="clip: Run; loop: repeat;"
+        rotation="0 0 0">
       </a-entity>
     </a-marker>
 
-    <!-- Kamera -->
     <a-entity camera></a-entity>
-
   </a-scene>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const model = document.querySelector('#myModel');
+
+      // Pastikan model sudah dimuat sepenuhnya
+      model.addEventListener('model-loaded', () => {
+        console.log('✅ Model berhasil dimuat, menyalakan animasi...');
+
+        // Putar semua animasi
+        model.setAttribute('animation-mixer', {
+          clip: 'Armature|mixamo.com|Layer0, Armature|mixamo.com|Layer0.001',
+          loop: 'repeat',
+          timeScale: 1
+        });
+      });
+    });
+  </script>
 </body>
 </html>
-
