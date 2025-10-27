@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>AR Penari Papua - Realistic Lighting</title>
-    <meta name="description" content="Marker-Based AR Penari Papua dengan lighting HDRI-style" />
+    <title>AR Penari Papua - Auto Play</title>
+    <meta name="description" content="Marker-Based AR Penari Papua auto play dengan tombol kontrol" />
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   </head>
@@ -24,47 +24,32 @@
       <button id="pause-button" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
         ⏸️ Pause Dance
       </button>
-      <button id="rotate-button" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">
-        🔄 Rotate
-      </button>
     </div>
 
     <!-- Scene AR -->
-    <a-scene embedded arjs="sourceType: webcam;">
+    <a-scene embedded arjs>
       <a-assets>
         <a-asset-item id="PenariPapua" src="./PenariPapua.glb"></a-asset-item>
       </a-assets>
 
       <!-- Marker Hiro -->
       <a-marker preset="hiro" id="hiroMarker">
-        <!-- ✨ Lighting Setup -->
-        <a-entity light="type: ambient; intensity: 0.6; color: #ffffff"></a-entity>
+        <!-- Pencahayaan -->
+        <a-entity light="type: ambient; intensity: 0.7; color: #ffffff"></a-entity>
         <a-entity light="type: directional; intensity: 1.2; color: #ffffff" position="1 2 1"></a-entity>
-        
-        <!-- 🌤️ Environment Light (sky & reflection) -->
-        <a-sky color="#bcd2ee"></a-sky>
-        <a-entity environment="preset: forest; lighting: pbr; ground: none;"></a-entity>
 
-        <!-- ✳️ Invisible plane for light bounce -->
-        <a-plane rotation="-90 0 0" width="2" height="2" material="color: #ffffff; opacity: 0"></a-plane>
-
-        <!-- 💃 Character Entity -->
-        <a-entity id="rotator" position="0 0 0"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear; pauseEvents: stop-rotation; startEvents: start-rotation;">
-          
-          <a-gltf-model
-            id="penari"
-            src="#PenariPapua"
-            position="0 0.2 0"
-            scale="0.3 0.3 0.3"
-            rotation="-90 0 0"
-            animation-mixer
-            shadow="cast: true; receive: true;">
-          </a-gltf-model>
-        </a-entity>
+        <!-- Model Penari -->
+        <a-gltf-model
+          id="penari"
+          src="#PenariPapua"
+          position="0 0.2 0"
+          scale="0.3 0.3 0.3"
+          rotation="-90 0 0"
+          animation-mixer>
+        </a-gltf-model>
       </a-marker>
 
-      <!-- Kamera AR -->
+      <!-- Kamera -->
       <a-entity camera></a-entity>
     </a-scene>
 
@@ -72,31 +57,28 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const penari = document.querySelector('#penari');
-        const rotateEntity = document.querySelector('#rotator');
         const marker = document.querySelector('#hiroMarker');
-
         const playButton = document.getElementById('play-button');
         const pauseButton = document.getElementById('pause-button');
-        const rotateButton = document.getElementById('rotate-button');
 
-        // Play/Pause manual
+        // Auto play saat marker muncul
+        marker.addEventListener('markerFound', () => {
+          console.log("Marker terdeteksi — mulai menari!");
+          penari.components['animation-mixer'].play();
+        });
+
+        // Hentikan animasi saat marker hilang
+        marker.addEventListener('markerLost', () => {
+          console.log("Marker hilang — hentikan animasi.");
+          penari.components['animation-mixer'].stop();
+        });
+
+        // Tombol kontrol manual
         playButton.addEventListener('click', () => {
           penari.components['animation-mixer'].play();
         });
-        pauseButton.addEventListener('click', () => {
-          penari.components['animation-mixer'].stop();
-        });
-        rotateButton.addEventListener('click', () => {
-          rotateEntity.emit('start-rotation');
-        });
 
-        // Auto play/pause ketika marker muncul/hilang
-        marker.addEventListener('markerFound', () => {
-          console.log("Marker ditemukan — animasi mulai!");
-          penari.components['animation-mixer'].play();
-        });
-        marker.addEventListener('markerLost', () => {
-          console.log("Marker hilang — animasi berhenti.");
+        pauseButton.addEventListener('click', () => {
           penari.components['animation-mixer'].stop();
         });
       });
