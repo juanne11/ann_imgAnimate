@@ -40,7 +40,7 @@
           position="0 0.2 0"
           scale="2 2 2"
           rotation="-90 0 0"
-          animation-mixer="clip: Armature|Dance">
+          animation-mixer="clip: *"> 
         </a-gltf-model>
       </a-marker>
 
@@ -57,28 +57,32 @@
         // Cek jika model sudah dimuat sebelum mengakses komponen
         penari.addEventListener('model-loaded', () => {
           console.log("Model penari berhasil dimuat.");
+          const mixer = penari.components['animation-mixer'];
+          
+          if (!mixer) {
+            console.error("Komponen animation-mixer tidak ditemukan.");
+            return;
+          }
           
           // Auto play saat marker muncul
           marker.addEventListener('markerFound', () => {
             console.log("Marker terdeteksi — mulai menari!");
-            penari.components['animation-mixer'].play();
+            mixer.play();
           });
 
           // Hentikan animasi saat marker hilang
           marker.addEventListener('markerLost', () => {
             console.log("Marker hilang — hentikan animasi.");
-            // .stop() akan menghentikan dan me-reset animasi ke awal
-            penari.components['animation-mixer'].stop();
+            mixer.stop();
           });
 
           // Tombol kontrol manual
           playButton.addEventListener('click', () => {
-            penari.components['animation-mixer'].play();
+            mixer.play();
           });
 
           pauseButton.addEventListener('click', () => {
-            // REKOMENDASI: Gunakan .pause() agar animasi benar-benar terjeda
-            penari.components['animation-mixer'].pause();
+            mixer.pause();
           });
         });
 
@@ -86,7 +90,3 @@
     </script>
   </body>
 </html>
-
-
-
-
