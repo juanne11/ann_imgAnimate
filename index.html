@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>AR.js GLTF Animation (Marker Hiro)</title>
-    
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>AR.js GLTF Animation (Marker Hiro)</title>
 
-    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.2.0/dist/aframe-extras.min.js"></script>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <!-- AR.js -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+  <!-- A-Frame Extras (untuk animation-mixer) -->
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.2.0/dist/aframe-extras.min.js"></script>
 
 </head>
-<body style='margin : 0px; overflow: hidden;'>
+<body style="margin: 0; overflow: hidden;">
 
-    <a-scene 
-        embedded 
-        vr-mode-ui="enabled: false"
-        arjs='sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;'>
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3; debugUIEnabled: false;">
 
-        <a-assets>
-            <a-asset-item id="animatedModel" src="orpap3.glb"></a-asset-item>
-        </a-assets>
+    <!-- Muat aset GLB -->
+    <a-assets>
+      <a-asset-item id="animatedModel" src="orpap3.glb"></a-asset-item>
+    </a-assets>
 
-        <a-marker preset='hiro'>
-            
-            <a-entity
-                gltf-model="#animatedModel" 
-                scale="1 1 1"                 
-                position="0 0 0"                     
-                rotation="0 0 0"                     
-                animation-mixer="clip: *; 
-                loop: repeat" ></a-entity>
-            
-        </a-marker>
+    <!-- Marker Hiro -->
+    <a-marker preset="hiro">
+      <a-entity
+        gltf-model="#animatedModel"
+        scale="0.5 0.5 0.5"
+        position="0 0 0"
+        rotation="0 0 0"
+        animation-mixer="clip: *; loop: repeat;">
+      </a-entity>
+    </a-marker>
 
-        <a-entity camera></a-entity>
-        
-    </a-scene>
+    <!-- Kamera -->
+    <a-entity camera></a-entity>
+
+  </a-scene>
+
 </body>
 </html>
-
